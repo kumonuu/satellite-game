@@ -1,5 +1,6 @@
 import pgzrun
 import random
+import time
 
 TITLE = "satellite game"
 WIDTH = 600
@@ -9,6 +10,8 @@ satellites = []
 line_coordinates = []
 satellite_number = 1
 satellite_index = 0
+start_time = time.time()
+time_taken = 0
 
 def spawn_satellites():
     global satellites
@@ -21,6 +24,7 @@ def spawn_satellites():
         satellites.append(satellite)
 
 def draw():
+    global time_taken
     satellite_number = 1
 
     screen.blit("space", (0,0))
@@ -32,12 +36,25 @@ def draw():
             fontsize=20
         )
         satellite_number += 1
+    
     if len(line_coordinates) > 0:
-        screen.draw.line(
-            line_coordinates[0][0],
-            line_coordinates[0][1],
-            "white"
-        )
+        for coordinate in line_coordinates:
+            screen.draw.line(
+                coordinate[0],
+                coordinate[1],
+                "white"
+            )
+
+    if len(line_coordinates) < 7:
+        time_taken = time.time() - start_time
+        time_taken = round(time_taken, 1)
+        screen.draw.text(str(time_taken), center=(20,20), fontsize=20)
+    else:
+        screen.draw.text(str(time_taken), center=(20,20), fontsize=20)
+
+
+def update():
+    pass
 
 def on_mouse_down(pos):
     global line_coordinates
@@ -51,7 +68,11 @@ def on_mouse_down(pos):
                 )
             )
         print(line_coordinates)
+        print(len(line_coordinates))
         satellite_index += 1
+    else:
+        line_coordinates = []
+        satellite_index = 0
 
 spawn_satellites()
 
